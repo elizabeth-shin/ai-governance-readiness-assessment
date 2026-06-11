@@ -1,5 +1,7 @@
 # AI Governance Readiness Assessment
 
+🔗 **Live Demo:** https://elizabeth-shin.github.io/ai-governance-readiness-assessment/
+
 Status: In development.
 
 A lightweight, Claude‑powered AI Governance Readiness Assessment designed to help organizations quickly understand their AI risk posture. This tool uses a 7‑question intake to generate a governance risk tier, highlight compliance gaps, and recommend actionable next steps.
