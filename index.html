@@ -1,31 +1,578 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AI Governance Readiness Assessment</title>
-  <style>
-    body { 
-      font-family: monospace; 
-      padding: 40px; 
-      background: #fafafa; 
-      color: #333;
-    }
-    .box { 
-      border: 1px solid #ddd; 
-      padding: 24px; 
-      background: white; 
-      max-width: 700px; 
-      margin: 60px auto; 
-      border-radius: 6px;
-    }
-    h2 { margin-top: 0; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Initiative Governance Intake — iCertify</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0d1117;
+    color: #e8e4d9;
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .container { max-width: 720px; margin: 0 auto; }
+
+  .header {
+    border-bottom: 1px solid #1d9e75;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .brand {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: #1d9e75;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    color: #e8e4d9;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: #8a8880;
+    line-height: 1.6;
+  }
+
+  .form-section { margin-bottom: 2rem; }
+
+  .section-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1d9e75;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #1a2a24;
+  }
+
+  .field { margin-bottom: 1.25rem; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #c8c4b9;
+    margin-bottom: 0.4rem;
+  }
+
+  .required { color: #d85a30; margin-left: 3px; }
+
+  input[type="text"], textarea, select {
+    width: 100%;
+    background: #141b22;
+    border: 1px solid #1e2d3a;
+    border-radius: 6px;
+    padding: 10px 14px;
+    color: #e8e4d9;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  input[type="text"]:focus, textarea:focus, select:focus { border-color: #1d9e75; }
+  textarea { resize: vertical; min-height: 80px; }
+  select option { background: #141b22; }
+
+  .radio-group, .checkbox-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .radio-item, .checkbox-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #141b22;
+    border: 1px solid #1e2d3a;
+    border-radius: 6px;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    color: #c8c4b9;
+  }
+
+  .radio-item:hover, .checkbox-item:hover { border-color: #1d9e75; }
+  .radio-item.selected, .checkbox-item.selected {
+    border-color: #1d9e75;
+    background: #0d2018;
+    color: #5dcaa5;
+  }
+
+  .radio-item input, .checkbox-item input { display: none; }
+
+  .dot {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    border: 1.5px solid #3a4a5a;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+
+  .radio-item.selected .dot { border-color: #1d9e75; background: #1d9e75; }
+
+  .check {
+    width: 14px; height: 14px;
+    border-radius: 3px;
+    border: 1.5px solid #3a4a5a;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+    font-size: 10px;
+  }
+
+  .checkbox-item.selected .check { border-color: #1d9e75; background: #1d9e75; color: white; }
+
+  .submit-btn {
+    width: 100%;
+    padding: 14px;
+    background: #1d9e75;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: background 0.2s;
+    margin-top: 1rem;
+  }
+
+  .submit-btn:hover { background: #0f6e56; }
+  .submit-btn:disabled { background: #1a3a2a; color: #3a6a5a; cursor: not-allowed; }
+
+  .loading { display: none; text-align: center; padding: 3rem; color: #5dcaa5; }
+
+  .spinner {
+    width: 32px; height: 32px;
+    border: 2px solid #1a3a2a;
+    border-top-color: #1d9e75;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 1rem;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .results { display: none; }
+
+  .risk-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    margin-bottom: 1.5rem;
+  }
+
+  .risk-low { background: #0d2018; color: #5dcaa5; border: 1px solid #1d9e75; }
+  .risk-medium { background: #1e1800; color: #ef9f27; border: 1px solid #ba7517; }
+  .risk-high { background: #1e0a08; color: #f0997b; border: 1px solid #993c1d; }
+  .risk-critical { background: #200808; color: #e24b4a; border: 1px solid #a32d2d; }
+
+  .result-card {
+    background: #141b22;
+    border: 1px solid #1e2d3a;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .result-card-title {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #1d9e75;
+    margin-bottom: 0.75rem;
+  }
+
+  .result-text { font-size: 14px; color: #c8c4b9; line-height: 1.7; }
+
+  .flag-list, .rec-list { list-style: none; }
+
+  .flag-list li, .rec-list li {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid #1e2d3a;
+    font-size: 13px;
+    color: #c8c4b9;
+    line-height: 1.5;
+  }
+
+  .flag-list li:last-child, .rec-list li:last-child { border-bottom: none; }
+  .flag-icon { color: #ef9f27; flex-shrink: 0; margin-top: 2px; }
+  .rec-icon { color: #5dcaa5; flex-shrink: 0; margin-top: 2px; }
+
+  .council-box {
+    background: #0d2018;
+    border: 1px solid #1d9e75;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .council-label {
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #5dcaa5;
+    margin-bottom: 0.75rem;
+  }
+
+  .council-text { font-size: 13px; color: #9ce8c8; line-height: 1.7; }
+
+  .reset-btn {
+    display: block;
+    margin: 1.5rem auto 0;
+    padding: 10px 24px;
+    background: transparent;
+    border: 1px solid #1e2d3a;
+    border-radius: 6px;
+    color: #8a8880;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .reset-btn:hover { border-color: #1d9e75; color: #5dcaa5; }
+
+  .icertify-footer {
+    text-align: center;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #1a2a24;
+    font-size: 11px;
+    color: #3a4a3a;
+    letter-spacing: 0.08em;
+  }
+
+  .api-notice {
+    background: #1e1800;
+    border: 1px solid #ba7517;
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 12px;
+    color: #ef9f27;
+    margin-bottom: 1.5rem;
+    display: none;
+  }
+</style>
 </head>
 <body>
-  <div class="box">
-    <h2>AI Governance Readiness Assessment</h2>
-    <p>Status: Build in progress.</p>
-    <p>This repository will host the interactive Claude‑powered governance intake tool.</p>
-    <p>The full version will be available soon.</p>
+<div class="container">
+  <div class="header">
+    <div class="brand">iCertify LLC — AI Governance Tools</div>
+    <h1 class="title">AI Initiative<br>Governance Intake</h1>
+    <p class="subtitle">Submit a new AI tool, model, or workflow for governance review. The system will assess risk tier, surface compliance flags, and generate a council-ready recommendation summary.</p>
   </div>
+
+  <div class="api-notice" id="api-notice">
+    ⚠ To enable AI-powered assessments, add your Anthropic API key: 
+    <input type="text" id="api-key-input" placeholder="sk-ant-..." style="width:260px; margin-left:8px; padding:4px 8px; font-size:12px; display:inline-block;">
+    <button onclick="saveKey()" style="margin-left:6px; padding:4px 10px; background:#ba7517; border:none; border-radius:4px; color:white; font-size:12px; cursor:pointer;">Save</button>
+  </div>
+
+  <div id="form-view">
+    <div class="form-section">
+      <div class="section-label">01 — Submitter & Initiative</div>
+      <div class="field">
+        <label>Initiative name <span class="required">*</span></label>
+        <input type="text" id="initiative-name" placeholder="e.g. Customer Support AI Chatbot, Internal Code Assistant">
+      </div>
+      <div class="field">
+        <label>Submitting team or department <span class="required">*</span></label>
+        <input type="text" id="team" placeholder="e.g. Engineering, Product, HR, Finance">
+      </div>
+      <div class="field">
+        <label>Brief description of the AI tool or workflow <span class="required">*</span></label>
+        <textarea id="description" placeholder="Describe what this AI system does, how it will be used, and by whom..."></textarea>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-label">02 — Data & Access</div>
+      <div class="field">
+        <label>What data does this system access or process? <span class="required">*</span></label>
+        <div class="checkbox-group" id="data-types">
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="pii"><div class="check">✓</div> Personal / PII data</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="financial"><div class="check">✓</div> Financial data</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="health"><div class="check">✓</div> Health / medical data</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="ip"><div class="check">✓</div> Proprietary / IP data</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="employee"><div class="check">✓</div> Employee data</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="public"><div class="check">✓</div> Public / non-sensitive data</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Who has access to this system? <span class="required">*</span></label>
+        <div class="radio-group" id="access-scope">
+          <label class="radio-item" onclick="selectRadio(this, 'access-scope')"><input type="radio" name="access" value="single"><div class="dot"></div> One team only</label>
+          <label class="radio-item" onclick="selectRadio(this, 'access-scope')"><input type="radio" name="access" value="multi"><div class="dot"></div> Multiple internal teams</label>
+          <label class="radio-item" onclick="selectRadio(this, 'access-scope')"><input type="radio" name="access" value="allstaff"><div class="dot"></div> All staff</label>
+          <label class="radio-item" onclick="selectRadio(this, 'access-scope')"><input type="radio" name="access" value="external"><div class="dot"></div> External / customers</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-label">03 — Decision & Autonomy</div>
+      <div class="field">
+        <label>Does this system make or influence decisions? <span class="required">*</span></label>
+        <div class="radio-group" id="decision-type">
+          <label class="radio-item" onclick="selectRadio(this, 'decision-type')"><input type="radio" name="decision" value="none"><div class="dot"></div> No decisions</label>
+          <label class="radio-item" onclick="selectRadio(this, 'decision-type')"><input type="radio" name="decision" value="advisory"><div class="dot"></div> Advisory only</label>
+          <label class="radio-item" onclick="selectRadio(this, 'decision-type')"><input type="radio" name="decision" value="assisted"><div class="dot"></div> Human-assisted decisions</label>
+          <label class="radio-item" onclick="selectRadio(this, 'decision-type')"><input type="radio" name="decision" value="autonomous"><div class="dot"></div> Autonomous decisions</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>What is the potential impact if this system fails or produces incorrect output?</label>
+        <div class="radio-group" id="failure-impact">
+          <label class="radio-item" onclick="selectRadio(this, 'failure-impact')"><input type="radio" name="impact" value="low"><div class="dot"></div> Minimal / easily corrected</label>
+          <label class="radio-item" onclick="selectRadio(this, 'failure-impact')"><input type="radio" name="impact" value="moderate"><div class="dot"></div> Moderate / requires review</label>
+          <label class="radio-item" onclick="selectRadio(this, 'failure-impact')"><input type="radio" name="impact" value="significant"><div class="dot"></div> Significant / affects users</label>
+          <label class="radio-item" onclick="selectRadio(this, 'failure-impact')"><input type="radio" name="impact" value="critical"><div class="dot"></div> Critical / legal or safety risk</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="section-label">04 — Compliance & Oversight</div>
+      <div class="field">
+        <label>Which regulatory frameworks apply to this initiative?</label>
+        <div class="checkbox-group" id="frameworks">
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="gdpr"><div class="check">✓</div> GDPR</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="ccpa"><div class="check">✓</div> CCPA / CPRA</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="hipaa"><div class="check">✓</div> HIPAA</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="euai"><div class="check">✓</div> EU AI Act</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="nist"><div class="check">✓</div> NIST AI RMF</label>
+          <label class="checkbox-item" onclick="toggleCheck(this)"><input type="checkbox" value="sox"><div class="check">✓</div> SOX / Financial regs</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Is there a human oversight mechanism in place?</label>
+        <div class="radio-group" id="oversight">
+          <label class="radio-item" onclick="selectRadio(this, 'oversight')"><input type="radio" name="oversight" value="none"><div class="dot"></div> None currently</label>
+          <label class="radio-item" onclick="selectRadio(this, 'oversight')"><input type="radio" name="oversight" value="planned"><div class="dot"></div> Planned but not built</label>
+          <label class="radio-item" onclick="selectRadio(this, 'oversight')"><input type="radio" name="oversight" value="partial"><div class="dot"></div> Partial oversight</label>
+          <label class="radio-item" onclick="selectRadio(this, 'oversight')"><input type="radio" name="oversight" value="full"><div class="dot"></div> Full oversight in place</label>
+        </div>
+      </div>
+      <div class="field">
+        <label>Any additional context, concerns, or notes for the governance council?</label>
+        <textarea id="notes" placeholder="Optional — share anything the council should know before review..."></textarea>
+      </div>
+    </div>
+
+    <button class="submit-btn" onclick="submitForm()" id="submit-btn">Submit for Governance Review →</button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    <p style="font-size:14px; color:#5dcaa5;">Analyzing submission and generating governance assessment...</p>
+  </div>
+
+  <div class="results" id="results"></div>
+
+  <div class="icertify-footer">iCertify LLC — AI Governance Tools — Powered by Claude</div>
+</div>
+
+<script>
+  // Replace this with your Anthropic API key when deploying
+  let API_KEY = 'YOUR_API_KEY_HERE';
+
+  window.onload = function() {
+    if (API_KEY === 'YOUR_API_KEY_HERE') {
+      document.getElementById('api-notice').style.display = 'block';
+    }
+  };
+
+  function saveKey() {
+    const key = document.getElementById('api-key-input').value.trim();
+    if (key.startsWith('sk-ant-')) {
+      API_KEY = key;
+      document.getElementById('api-notice').style.display = 'none';
+      alert('API key saved. You can now submit for assessment.');
+    } else {
+      alert('Please enter a valid Anthropic API key starting with sk-ant-');
+    }
+  }
+
+  function toggleCheck(el) { el.classList.toggle('selected'); }
+
+  function selectRadio(el, groupId) {
+    document.querySelectorAll('#' + groupId + ' .radio-item').forEach(r => r.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function getChecked(groupId) {
+    return Array.from(document.querySelectorAll('#' + groupId + ' .checkbox-item.selected input')).map(i => i.value);
+  }
+
+  function getRadio(groupId) {
+    const sel = document.querySelector('#' + groupId + ' .radio-item.selected input');
+    return sel ? sel.value : null;
+  }
+
+  async function submitForm() {
+    const name = document.getElementById('initiative-name').value.trim();
+    const team = document.getElementById('team').value.trim();
+    const description = document.getElementById('description').value.trim();
+
+    if (!name || !team || !description) {
+      alert('Please fill in the required fields: initiative name, team, and description.');
+      return;
+    }
+
+    if (API_KEY === 'YOUR_API_KEY_HERE') {
+      alert('Please add your Anthropic API key to enable assessments.');
+      document.getElementById('api-notice').style.display = 'block';
+      return;
+    }
+
+    const dataTypes = getChecked('data-types');
+    const access = getRadio('access-scope');
+    const decision = getRadio('decision-type');
+    const impact = getRadio('failure-impact');
+    const frameworks = getChecked('frameworks');
+    const oversight = getRadio('oversight');
+    const notes = document.getElementById('notes').value.trim();
+
+    document.getElementById('form-view').style.display = 'none';
+    document.getElementById('loading').style.display = 'block';
+
+    const prompt = `You are an AI Governance Analyst reviewing a new AI initiative submission for an enterprise organization. Analyze the following submission and provide a structured governance assessment.
+
+SUBMISSION DETAILS:
+Initiative Name: ${name}
+Submitting Team: ${team}
+Description: ${description}
+Data Types Accessed: ${dataTypes.length ? dataTypes.join(', ') : 'none specified'}
+Access Scope: ${access || 'not specified'}
+Decision-Making Role: ${decision || 'not specified'}
+Failure Impact Level: ${impact || 'not specified'}
+Applicable Frameworks: ${frameworks.length ? frameworks.join(', ') : 'none specified'}
+Human Oversight: ${oversight || 'not specified'}
+Additional Notes: ${notes || 'none'}
+
+Provide a JSON response with exactly this structure (no markdown, no explanation, just the JSON object):
+{
+  "risk_tier": "Low" or "Medium" or "High" or "Critical",
+  "risk_rationale": "2-3 sentence explanation of why this tier was assigned",
+  "compliance_flags": [
+    {"flag": "short flag title", "detail": "1-2 sentence explanation"}
+  ],
+  "recommendations": [
+    {"action": "short action title", "detail": "1-2 sentence explanation"}
+  ],
+  "council_summary": "A 3-4 sentence executive summary written for a governance council covering what the initiative is, the risk level, the key concerns, and the recommended next step. Write in third person, professional tone."
+}
+
+Provide 2-4 compliance flags and 3-5 recommendations appropriate to the risk level. Be specific and actionable.`;
+
+    try {
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': API_KEY,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-haiku-4-5-20251001',
+          max_tokens: 1000,
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await response.json();
+      const text = data.content[0].text.replace(/```json|```/g, '').trim();
+      const result = JSON.parse(text);
+
+      document.getElementById('loading').style.display = 'none';
+      renderResults(result, name, team);
+
+    } catch (err) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('form-view').style.display = 'block';
+      alert('Assessment could not be generated. Please check your API key and try again.');
+      console.error(err);
+    }
+  }
+
+  function renderResults(r, name, team) {
+    const tierClass = { 'Low': 'risk-low', 'Medium': 'risk-medium', 'High': 'risk-high', 'Critical': 'risk-critical' }[r.risk_tier] || 'risk-medium';
+    const tierIcon = { 'Low': '●', 'Medium': '◆', 'High': '▲', 'Critical': '⬟' }[r.risk_tier] || '◆';
+
+    const flagsHtml = r.compliance_flags.map(f => `
+      <li><span class="flag-icon">⚑</span><div><strong style="color:#ef9f27; font-size:13px;">${f.flag}</strong><br>${f.detail}</div></li>
+    `).join('');
+
+    const recsHtml = r.recommendations.map(rec => `
+      <li><span class="rec-icon">→</span><div><strong style="color:#5dcaa5; font-size:13px;">${rec.action}</strong><br>${rec.detail}</div></li>
+    `).join('');
+
+    document.getElementById('results').innerHTML = `
+      <div style="margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid #1a2a24;">
+        <div style="font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#5dcaa5; margin-bottom:0.5rem;">Governance Assessment Complete</div>
+        <div style="font-family:'DM Serif Display', serif; font-size:1.4rem; color:#e8e4d9; margin-bottom:0.25rem;">${name}</div>
+        <div style="font-size:13px; color:#8a8880;">${team}</div>
+      </div>
+      <span class="risk-badge ${tierClass}">${tierIcon} ${r.risk_tier} Risk</span>
+      <div class="result-card">
+        <div class="result-card-title">Risk Assessment</div>
+        <p class="result-text">${r.risk_rationale}</p>
+      </div>
+      <div class="result-card">
+        <div class="result-card-title">Compliance Flags</div>
+        <ul class="flag-list">${flagsHtml}</ul>
+      </div>
+      <div class="result-card">
+        <div class="result-card-title">Recommendations</div>
+        <ul class="rec-list">${recsHtml}</ul>
+      </div>
+      <div class="council-box">
+        <div class="council-label">Council Summary — Ready to Share</div>
+        <p class="council-text">${r.council_summary}</p>
+      </div>
+      <button class="reset-btn" onclick="resetForm()">Submit another initiative</button>
+    `;
+
+    document.getElementById('results').style.display = 'block';
+  }
+
+  function resetForm() {
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('results').innerHTML = '';
+    document.getElementById('form-view').style.display = 'block';
+    document.getElementById('initiative-name').value = '';
+    document.getElementById('team').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('notes').value = '';
+    document.querySelectorAll('.radio-item, .checkbox-item').forEach(el => el.classList.remove('selected'));
+  }
+</script>
 </body>
 </html>
